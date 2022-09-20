@@ -12,7 +12,7 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
     <groupId>cc.carm.core</groupId>
-    <artifactId>mineusers</artifactId>
+    <artifactId>minecommon</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>api</module>
