@@ -16,6 +16,7 @@ import java.io.File;
 public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, Listener {
 
     protected MineUserCore core;
+    protected boolean enabled = true;
 
     @Override
     protected void load() {
@@ -24,12 +25,16 @@ public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, List
             this.core = new MineUserCore(this);
         } catch (Exception ex) {
             ex.printStackTrace();
-            setEnabled(false);
+            this.enabled = false;
         }
     }
 
     @Override
     protected boolean initialize() {
+        if (!this.enabled) {
+            log("插件初始化失败，已禁用。");
+            return false;
+        }
 
         registerListener(this);
 

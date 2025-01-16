@@ -48,6 +48,9 @@ public interface PluginConfig extends Configuration {
         @HeaderComment("是否启用Redis缓存，启用后将会使用Redis缓存用户数据。")
         ConfigValue<Boolean> REDIS_SUPPORT = ConfiguredValue.of(true);
 
+        @HeaderComment("Redis缓存键值，一般不用修改。")
+        ConfigValue<String> REDIS_KEY = ConfiguredValue.of("user-cache");
+
     }
 
 
