@@ -74,6 +74,11 @@ public class UserKeyManager implements MineUserManager {
         }
     }
 
+    public void cache(UserKey key) {
+        loaded.put(key.uuid(), key);
+        if (useRedis()) RedisCache.cache(key);
+    }
+
     public void remove(UUID uuid) {
         loaded.remove(uuid);
     }
@@ -104,18 +109,18 @@ public class UserKeyManager implements MineUserManager {
                             e.printStackTrace();
                         });
             }
-            loaded.put(uuid, new UserKey(id, uuid, username));
+            cache(new UserKey(id, uuid, username));
             return;
         }
 
         if (!PluginConfig.USER.CREATE.getNotNull()) return;
         try {
-            long uid = TABLE.createInsert()
+            id = TABLE.createInsert()
                     .setColumnNames(UserKeyType.UUID.dataKey(), UserKeyType.NAME.dataKey())
                     .setParams(uuid, username)
                     .returnGeneratedKey().execute();
-            if (uid > 0) {
-                loaded.put(uuid, new UserKey(uid, uuid, username));
+            if (id > 0) {
+                cache(new UserKey(id, uuid, username));
             }
         } catch (SQLException e) {
             getLogger().severe("创建新用户 " + username + " 失败！");
@@ -140,7 +145,7 @@ public class UserKeyManager implements MineUserManager {
     public @Unmodifiable @NotNull Set<UserKey> cached() {
         return Set.copyOf(loaded.values());
     }
-    
+
     @Override
     public @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param) {
         if (param == null) return null;

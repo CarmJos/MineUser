@@ -1,5 +1,5 @@
 main: cc.carm.lib.minecraft.user.MineUserBungee
-name: MineUsers
+name: MineUser
 version: ${project.version}
 
 website: ${project.url}

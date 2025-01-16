@@ -1,8 +1,8 @@
 main: cc.carm.lib.minecraft.user.MineUserBukkit
 version: ${project.version}
 
-prefix: MineUsers
-name: MineUsers
+prefix: MineUser
+name: MineUser
 load: STARTUP
 
 website: ${project.url}
