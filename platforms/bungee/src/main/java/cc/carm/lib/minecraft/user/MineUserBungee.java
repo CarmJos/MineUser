@@ -2,14 +2,19 @@ package cc.carm.lib.minecraft.user;
 
 import cc.carm.lib.minecraft.user.conf.PluginConfig;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 import org.bstats.bungeecord.Metrics;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-public class MineUserBungee extends Plugin implements MineUserPlatform {
+public class MineUserBungee extends Plugin implements MineUserPlatform, Listener {
 
     protected MineUserCore core;
 
@@ -22,6 +27,7 @@ public class MineUserBungee extends Plugin implements MineUserPlatform {
     @Override
     public void onEnable() {
         outputInfo();
+        getProxy().getPluginManager().registerListener(this, this);
 
         if (PluginConfig.METRICS.getNotNull()) {
             getLogger().info("启用统计数据...");
@@ -37,6 +43,23 @@ public class MineUserBungee extends Plugin implements MineUserPlatform {
         } else {
             getLogger().info("已禁用检查更新，跳过。");
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onLogin(LoginEvent event) {
+        if (event.isCancelled()) return;
+        this.core.manager.load(event.getConnection().getUniqueId(), event.getConnection().getName());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLoginMonitor(LoginEvent event) {
+        if (!event.isCancelled()) return;
+        this.core.manager.remove(event.getConnection().getUniqueId());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onQuit(PlayerDisconnectEvent event) {
+        this.core.manager.remove(event.getPlayer().getUniqueId());
     }
 
 

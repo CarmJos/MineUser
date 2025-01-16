@@ -1,5 +1,5 @@
-main: cc.carm.plugin.mineredis.MineRedisBungee
-name: MineRedis
+main: cc.carm.lib.minecraft.user.MineUserBungee
+name: MineUsers
 version: ${project.version}
 
 website: ${project.url}

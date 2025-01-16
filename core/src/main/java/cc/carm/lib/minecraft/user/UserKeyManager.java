@@ -74,6 +74,54 @@ public class UserKeyManager implements MineUserManager {
         }
     }
 
+    public void remove(UUID uuid) {
+        loaded.remove(uuid);
+    }
+
+    public void load(UUID uuid, String username) {
+        long id = -1;
+        String cachedName = null;
+
+        try (SQLQuery query = TABLE.createQuery()
+                .addCondition(UserKeyType.UUID.dataKey(), uuid)
+                .setLimit(1).build().execute()) {
+            ResultSet resultSet = query.getResultSet();
+            if (resultSet != null && resultSet.next()) {
+                id = resultSet.getInt(UserKeyType.ID.dataKey());
+                cachedName = resultSet.getString(UserKeyType.NAME.dataKey());
+            }
+        } catch (SQLException ignore) {
+        }
+
+        if (id > 0) {
+            if (PluginConfig.USER.CREATE.getNotNull()
+                    && (cachedName == null || !cachedName.equals(username))) {
+                TABLE.createUpdate()
+                        .addColumnValue(UserKeyType.NAME.dataKey(), username)
+                        .addCondition("id", id)
+                        .build().execute((e, a) -> {
+                            getLogger().severe("更新用户 " + username + " 的用户名失败！");
+                            e.printStackTrace();
+                        });
+            }
+            loaded.put(uuid, new UserKey(id, uuid, username));
+            return;
+        }
+
+        if (!PluginConfig.USER.CREATE.getNotNull()) return;
+        try {
+            long uid = TABLE.createInsert()
+                    .setColumnNames(UserKeyType.UUID.dataKey(), UserKeyType.NAME.dataKey())
+                    .setParams(uuid, username)
+                    .returnGeneratedKey().execute();
+            if (uid > 0) {
+                loaded.put(uuid, new UserKey(uid, uuid, username));
+            }
+        } catch (SQLException e) {
+            getLogger().severe("创建新用户 " + username + " 失败！");
+        }
+    }
+
     public @Nullable UserKey getKeyFromDatabase(UserKeyType type, Object param) {
         return TABLE.createQuery()
                 .addCondition(type.dataKey().toLowerCase(), param)
@@ -92,46 +140,7 @@ public class UserKeyManager implements MineUserManager {
     public @Unmodifiable @NotNull Set<UserKey> cached() {
         return Set.copyOf(loaded.values());
     }
-
-    protected long upsertUserID(UUID uuid, String username) {
-        long id = -1;
-        String cachedName = null;
-
-        try (SQLQuery query = TABLE.createQuery()
-                .addCondition(UserKeyType.UUID.dataKey(), uuid)
-                .setLimit(1).build().execute()) {
-            ResultSet resultSet = query.getResultSet();
-            if (resultSet != null && resultSet.next()) {
-                id = resultSet.getInt(UserKeyType.ID.dataKey());
-                cachedName = resultSet.getString(UserKeyType.NAME.dataKey());
-            }
-        } catch (SQLException ignore) {
-        }
-
-        if (id > 0) {
-            if (cachedName == null || !cachedName.equals(username)) {
-                TABLE.createUpdate()
-                        .addColumnValue(UserKeyType.NAME.dataKey(), username)
-                        .addCondition("id", id)
-                        .build().execute((e, a) -> {
-                            getLogger().severe("更新用户 " + username + " 的用户名失败！");
-                            e.printStackTrace();
-                        });
-            }
-            return id;
-        } else {
-            try {
-                return TABLE.createInsert()
-                        .setColumnNames(UserKeyType.UUID.dataKey(), UserKeyType.NAME.dataKey())
-                        .setParams(uuid, username)
-                        .returnGeneratedKey().execute();
-            } catch (SQLException e) {
-                getLogger().severe("创建新用户 " + username + " 失败！");
-                return -1L;
-            }
-        }
-    }
-
+    
     @Override
     public @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param) {
         if (param == null) return null;

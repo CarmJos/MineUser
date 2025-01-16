@@ -4,11 +4,16 @@ import cc.carm.lib.easyplugin.EasyPlugin;
 import cc.carm.lib.minecraft.user.conf.PluginConfig;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class MineUserBukkit extends EasyPlugin implements MineUserPlatform {
+public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, Listener {
 
     protected MineUserCore core;
 
@@ -25,6 +30,8 @@ public class MineUserBukkit extends EasyPlugin implements MineUserPlatform {
 
     @Override
     protected boolean initialize() {
+
+        registerListener(this);
 
         if (PluginConfig.METRICS.getNotNull()) {
             log("启用统计数据...");
@@ -56,5 +63,23 @@ public class MineUserBukkit extends EasyPlugin implements MineUserPlatform {
     public boolean isRedisAvailable() {
         return Bukkit.getPluginManager().isPluginEnabled("MineRedis");
     }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+        this.core.manager.load(event.getUniqueId(), event.getName());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPreLoginMonitor(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) {
+            this.core.manager.remove(event.getUniqueId());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onQuit(PlayerQuitEvent event) {
+        this.core.manager.remove(event.getPlayer().getUniqueId());
+    }
+
 
 }

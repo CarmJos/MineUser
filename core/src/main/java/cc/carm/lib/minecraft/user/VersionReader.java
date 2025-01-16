@@ -1,4 +1,4 @@
-package cc.carm.plugin.user;
+package cc.carm.lib.minecraft.user;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

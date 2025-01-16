@@ -1,13 +1,12 @@
-package cc.carm.plugin.user;
+package cc.carm.lib.minecraft.user;
 
-import cc.carm.lib.minecraft.user.MineUserCore;
-import cc.carm.lib.minecraft.user.MineUserPlatform;
 import cc.carm.lib.minecraft.user.conf.PluginConfig;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -67,6 +66,7 @@ public class MineUserVelocity implements MineUserPlatform {
         }
 
     }
+
     public ProxyServer getServer() {
         return server;
     }
@@ -95,6 +95,22 @@ public class MineUserVelocity implements MineUserPlatform {
                 this.getClass().getResourceAsStream("PLUGIN_INFO"),
                 s -> getServer().getConsoleCommandSource().sendMessage(Component.text(s))
         );
+    }
+
+    @Subscribe(order = PostOrder.FIRST)
+    public void onLogin(LoginEvent event) {
+        this.core.manager.load(event.getPlayer().getUniqueId(), event.getPlayer().getUsername());
+    }
+
+    @Subscribe(order = PostOrder.LAST)
+    public void onDisconnect(LoginEvent event) {
+        if (event.getResult().isAllowed()) return;
+        this.core.manager.remove(event.getPlayer().getUniqueId());
+    }
+
+    @Subscribe(order = PostOrder.LAST)
+    public void onDisconnect(DisconnectEvent event) {
+        this.core.manager.remove(event.getPlayer().getUniqueId());
     }
 
 }

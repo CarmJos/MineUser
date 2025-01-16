@@ -3,31 +3,36 @@ package cc.carm.lib.minecraft.user.hooker;
 import cc.carm.lib.minecraft.user.data.UserKey;
 import cc.carm.lib.minecraft.user.data.UserKeyType;
 import cc.carm.plugin.mineredis.MineRedis;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class RedisCache {
-    private static final JsonParser PARSER = new JsonParser();
-    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
+    // JSON FORMAT
+    private static final String JSON_FORMAT = "{\"id\":%d,\"uuid\":\"%s\",\"name\":\"%s\"}";
+    private static final Pattern JSON_PATTERN = Pattern.compile("\\{\"id\":\\d+,\"uuid\":\"[0-9a-f-]+\",\"name\":\"[a-zA-Z0-9_]+\"}");
 
     public static @Nullable UserKey read(UserKeyType type, Object param) {
         String key = (type == UserKeyType.ID ? "#" : "") + param.toString();
         String data = MineRedis.sync().hget("user-cache", key);
         if (data == null) return null;
         try {
-            JsonObject json = PARSER.parse(data).getAsJsonObject();
+            data = data.replace(" ", "");
+            Matcher matcher = JSON_PATTERN.matcher(data);
+            if (!JSON_PATTERN.matcher(data).matches()) {
+                MineRedis.async().hdel("user-cache", key);
+                return null;
+            }
+
             return new UserKey(
-                    json.get("id").getAsLong(),
-                    UUID.fromString(json.get("uuid").getAsString()),
-                    json.get("name").getAsString()
+                    Long.parseLong(matcher.group(1)),
+                    UUID.fromString(matcher.group(2)),
+                    matcher.group(3)
             );
         } catch (Exception ex) {
             MineRedis.async().hdel("user-cache", key);
@@ -37,7 +42,7 @@ public class RedisCache {
     }
 
     public static void cache(UserKey key) {
-        String jsonValue = GSON.toJson(key);
+        String jsonValue = String.format(JSON_FORMAT, key.id(), key.uuid(), key.name());
         Map<String, String> values = Arrays.stream(UserKeyType.values()).collect(Collectors.toMap(
                 value -> (value == UserKeyType.ID ? "#" : "") + key.value(value),
                 value -> jsonValue, (a, b) -> b)
