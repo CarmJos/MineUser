@@ -45,6 +45,25 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git@github.com:CarmJos/MineConfiguration</connection>
+        <developerConnection>scm:git:git@github.com:CarmJos/MineConfiguration.git</developerConnection>
+        <url>https://github.com/CarmJos/MineConfiguration</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.html</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/CarmJos/MineConfiguration/issues</url>
+    </issueManagement>
+
     <ciManagement>
         <system>GitHub Actions</system>
         <url>https://github.com/CarmJos/MineUser/actions/workflows/maven.yml</url>
