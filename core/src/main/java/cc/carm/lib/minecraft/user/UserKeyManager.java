@@ -1,0 +1,159 @@
+package cc.carm.lib.minecraft.user;
+
+import cc.carm.lib.easysql.api.SQLManager;
+import cc.carm.lib.easysql.api.SQLQuery;
+import cc.carm.lib.easysql.api.SQLTable;
+import cc.carm.lib.easysql.api.enums.IndexType;
+import cc.carm.lib.easysql.api.table.NamedSQLTable;
+import cc.carm.lib.minecraft.user.conf.PluginConfig;
+import cc.carm.lib.minecraft.user.data.UserKey;
+import cc.carm.lib.minecraft.user.data.UserKeyType;
+import cc.carm.lib.minecraft.user.hooker.RedisCache;
+import cc.carm.plugin.minesql.MineSQL;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+public class UserKeyManager implements MineUserManager {
+
+    protected static final NamedSQLTable TABLE = SQLTable.of("users", table -> {
+        table.addAutoIncrementColumn(UserKeyType.ID.dataKey());
+        table.addColumn(UserKeyType.UUID.dataKey(), "CHAR(36) NOT NULL");
+        table.addColumn(UserKeyType.NAME.dataKey(), "VARCHAR(20)");
+
+        table.setIndex(IndexType.UNIQUE_KEY, "idx_user_uuid", UserKeyType.UUID.dataKey());
+        table.setIndex(IndexType.INDEX, "idx_user_name", UserKeyType.NAME.dataKey());
+    });
+
+    protected final @NotNull Map<UUID, UserKey> loaded = new HashMap<>();
+    protected final @NotNull Cache<Object, UserKey> cache = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build();
+
+    protected final MineUserPlatform platform;
+
+    public UserKeyManager(MineUserPlatform platform) {
+        this.platform = platform;
+    }
+
+    public Logger getLogger() {
+        return platform.getLogger();
+    }
+
+    public boolean useRedis() {
+        return PluginConfig.DATA.REDIS_SUPPORT.getNotNull() && platform.isRedisAvailable();
+    }
+
+    public boolean initTables() {
+        String db = PluginConfig.DATA.DATABASE.getNotNull();
+        SQLManager manager = MineSQL.getRegistry().get(db);
+        if (manager == null) {
+            getLogger().severe("未找到ID为 " + db + " 的数据库连接！");
+            return false;
+        }
+
+        try {
+            TABLE.create(manager, PluginConfig.DATA.TABLE_PREFIX.getNotNull());
+            return true;
+        } catch (SQLException e) {
+            getLogger().severe("初始化用户表失败！");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public @Nullable UserKey getKeyFromDatabase(UserKeyType type, Object param) {
+        return TABLE.createQuery()
+                .addCondition(type.dataKey().toLowerCase(), param)
+                .setLimit(1).build().execute(query -> {
+                    ResultSet resultSet = query.getResultSet();
+                    if (!resultSet.next()) return null;
+                    return new UserKey(
+                            resultSet.getInt(UserKeyType.ID.dataKey()),
+                            UUID.fromString(resultSet.getString(UserKeyType.UUID.dataKey())),
+                            resultSet.getString(UserKeyType.NAME.dataKey())
+                    );
+                }, null, null);
+    }
+
+    @Override
+    public @Unmodifiable @NotNull Set<UserKey> cached() {
+        return Set.copyOf(loaded.values());
+    }
+
+    protected long upsertUserID(UUID uuid, String username) {
+        long id = -1;
+        String cachedName = null;
+
+        try (SQLQuery query = TABLE.createQuery()
+                .addCondition(UserKeyType.UUID.dataKey(), uuid)
+                .setLimit(1).build().execute()) {
+            ResultSet resultSet = query.getResultSet();
+            if (resultSet != null && resultSet.next()) {
+                id = resultSet.getInt(UserKeyType.ID.dataKey());
+                cachedName = resultSet.getString(UserKeyType.NAME.dataKey());
+            }
+        } catch (SQLException ignore) {
+        }
+
+        if (id > 0) {
+            if (cachedName == null || !cachedName.equals(username)) {
+                TABLE.createUpdate()
+                        .addColumnValue(UserKeyType.NAME.dataKey(), username)
+                        .addCondition("id", id)
+                        .build().execute((e, a) -> {
+                            getLogger().severe("更新用户 " + username + " 的用户名失败！");
+                            e.printStackTrace();
+                        });
+            }
+            return id;
+        } else {
+            try {
+                return TABLE.createInsert()
+                        .setColumnNames(UserKeyType.UUID.dataKey(), UserKeyType.NAME.dataKey())
+                        .setParams(uuid, username)
+                        .returnGeneratedKey().execute();
+            } catch (SQLException e) {
+                getLogger().severe("创建新用户 " + username + " 失败！");
+                return -1L;
+            }
+        }
+    }
+
+    @Override
+    public @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param) {
+        if (param == null) return null;
+        try {
+            return cache.get(param, () -> {
+                UserKey fromLoaded = loaded.values().stream()
+                        .filter(key -> key.match(type, param))
+                        .findFirst().orElse(null);
+                if (fromLoaded != null) return fromLoaded;
+
+                if (useRedis()) {
+                    UserKey fromRedis = RedisCache.read(type, param);
+                    if (fromRedis != null) return fromRedis;
+                }
+
+                UserKey fromDB = getKeyFromDatabase(type, param);
+                if (fromDB != null && useRedis()) RedisCache.cache(fromDB);
+                return fromDB;
+            });
+        } catch (ExecutionException e) {
+            return null;
+        }
+    }
+
+}

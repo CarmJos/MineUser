@@ -1,0 +1,19 @@
+main: cc.carm.lib.minecraft.user.MineUserBukkit
+version: ${project.version}
+
+prefix: MineUsers
+name: MineUsers
+load: STARTUP
+
+website: ${project.url}
+description: ${project.description}
+authors:
+  - CarmJos
+
+api-version: 1.13
+
+depend:
+  - MineSQL
+
+softdepend:
+  - MineRedis
