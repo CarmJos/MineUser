@@ -8,7 +8,7 @@
 # MineUser
 
 [![version](https://img.shields.io/github/v/release/CarmJos/MineUser)](https://github.com/CarmJos/MineUser/releases)
-[![License](https://img.shields.io/github/license/CarmJos/MineUser)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/CarmJos/MineUser)](https://www.gnu.org/licenses/lgpl-3.0.html)
 [![workflow](https://github.com/CarmJos/MineUser/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/MineUser/actions/workflows/maven.yml)
 ![CodeSize](https://img.shields.io/github/languages/code-size/CarmJos/MineUser)
 ![](https://visitor-badge.glitch.me/badge?page_id=MineUser.readme)
@@ -17,7 +17,15 @@ MineCraft服务器通用用户键值调取、查询接口。
 
 ## 开发
 
-通过 `MineUserAPI` 入口类，您可以操作以下方法：
+本插件/依赖库提供了一个通用的用户键记录，其格式如下
+
+```java
+record UserKey(
+        long id, @NotNull UUID uuid,
+        @NotNull String name
+)
+```
+而通过 `MineUserAPI` 入口类，您可以快速操作以下方法：
 
 - `@Nullable UserKey key(UserKeyType type, Object param)`
 - `@Nullable UserKey key(long id)`
@@ -28,7 +36,9 @@ MineCraft服务器通用用户键值调取、查询接口。
 - `@Nullable String username(long id)` 
 - `@Nullable String username(@NotNull UUID userUUID)`
 - `@Nullable UUID uuid(long id)`
-- `@Nullable UUID uuid(@NotNull String username)` 
+- `@Nullable UUID uuid(@NotNull String username)`
+
+对键值对的获取有基于Redis的预先缓存，但仍然建议您在使用时进行异步操作。
 
 ### 依赖方式
 
@@ -41,28 +51,18 @@ MineCraft服务器通用用户键值调取、查询接口。
 
 <project>
     <repositories>
-
-        <repository>
-            <!--采用Maven中心库，安全稳定，但版本更新需要等待同步-->
-            <id>maven</id>
-            <name>Maven Central</name>
-            <url>https://repo1.maven.org/maven2</url>
-        </repository>
-
         <repository>
             <!--采用github依赖库，实时更新，但需要配置 (推荐) -->
             <id>MineUser</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/CarmJos/MineUser</url>
         </repository>
-
         <repository>
             <!--采用我的私人依赖库，简单方便，但可能因为变故而无法使用-->
             <id>carm-repo</id>
             <name>Carm's Repo</name>
             <url>https://repo.carm.cc/repository/maven-public/</url>
         </repository>
-
     </repositories>
 </project>
 ```
@@ -95,10 +95,7 @@ MineCraft服务器通用用户键值调取、查询接口。
 
 ```groovy
 repositories {
-
-    // 采用Maven中心库，安全稳定，但版本更新需要等待同步
-    mavenCentral()
-
+    
     // 采用github依赖库，实时更新，但需要配置 (推荐)
     maven { url 'https://maven.pkg.github.com/CarmJos/MineUser' }
 
