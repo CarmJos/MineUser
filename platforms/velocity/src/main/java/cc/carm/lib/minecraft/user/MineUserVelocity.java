@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -21,7 +22,8 @@ import java.util.logging.Logger;
 @Plugin(id = "mineuser", name = "MineUser",
         description = "MineUser For Velocity",
         url = "https://github.com/CarmJos/MineUser",
-        authors = {"CarmJos"}
+        authors = {"CarmJos"},
+        dependencies = {@Dependency(id = "mineredis", optional = true), @Dependency(id = "minesql")}
 )
 public class MineUserVelocity implements MineUserPlatform {
 
@@ -41,15 +43,14 @@ public class MineUserVelocity implements MineUserPlatform {
         this.logger = logger;
         this.dataFolder = dataDirectory.toFile();
         this.metricsFactory = metricsFactory;
-
-        getLogger().info("加载基础核心...");
-        this.core = new MineUserCore(this);
     }
 
     @Subscribe(order = PostOrder.FIRST)
     public void onInitialize(ProxyInitializeEvent event) {
         outputInfo();
 
+        getLogger().info("加载基础核心...");
+        this.core = new MineUserCore(this);
 
         if (PluginConfig.METRICS.getNotNull()) {
             getLogger().info("启用统计数据...");
