@@ -1,15 +1,38 @@
 package cc.carm.lib.minecraft.user.data;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+
 public enum UserKeyType {
-    ID("id"), UUID("uuid"), NAME("name");
+    ID("id", Long.class, Number.class),
+    UUID("uuid", java.util.UUID.class),
+    NAME("name", String.class);
 
-    final String dataKey;
+    final @NotNull String dataKey;
+    final @NotNull Class<?> type;
+    final @NotNull Class<?>[] accepted;
 
-    UserKeyType(String dataKey) {
+    /**
+     * Value types in the {@link UserKey}.
+     *
+     * @param dataKey  The key in the data map.
+     * @param type     The original type of the value.
+     * @param accepted The additional accepted types of the value.
+     */
+    UserKeyType(@NotNull String dataKey, @NotNull Class<?> type, @NotNull Class<?>... accepted) {
         this.dataKey = dataKey;
+        this.type = type;
+        this.accepted = accepted;
     }
 
     public String dataKey() {
         return dataKey;
     }
+
+    public boolean validate(Object data) {
+        return type.isInstance(data) || Arrays.stream(accepted).anyMatch(a -> a.isInstance(data));
+    }
+
+
 }

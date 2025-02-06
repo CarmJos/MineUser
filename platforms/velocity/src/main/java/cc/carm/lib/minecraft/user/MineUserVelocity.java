@@ -10,6 +10,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 import org.bstats.velocity.Metrics;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Plugin(id = "mineuser", name = "MineUser",
@@ -43,14 +45,14 @@ public class MineUserVelocity implements MineUserPlatform {
         this.logger = logger;
         this.dataFolder = dataDirectory.toFile();
         this.metricsFactory = metricsFactory;
+
+        getLogger().info("加载基础核心...");
+        this.core = new MineUserCore(this);
     }
 
     @Subscribe(order = PostOrder.FIRST)
     public void onInitialize(ProxyInitializeEvent event) {
         outputInfo();
-
-        getLogger().info("加载基础核心...");
-        this.core = new MineUserCore(this);
 
         if (PluginConfig.METRICS.getNotNull()) {
             getLogger().info("启用统计数据...");
@@ -79,6 +81,14 @@ public class MineUserVelocity implements MineUserPlatform {
     @Override
     public boolean isRedisAvailable() {
         return getServer().getPluginManager().isLoaded("mineredis");
+    }
+
+    @Override
+    public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
+        if (!(playerObject instanceof Player player)) {
+            throw new IllegalArgumentException("Only a player can provide a UserKey.");
+        }
+        return player.getUniqueId();
     }
 
     public String getVersion() {

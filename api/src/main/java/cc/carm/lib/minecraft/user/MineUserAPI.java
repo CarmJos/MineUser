@@ -22,6 +22,16 @@ public class MineUserAPI {
     }
 
     /**
+     * 通过在线玩家获取缓存的用户键
+     *
+     * @param player 在线玩家(玩家对象)
+     * @return {@link UserKey} 用户键
+     */
+    public static @NotNull UserKey playerKey(@NotNull Object player) {
+        return plugin.playerKey(player);
+    }
+
+    /**
      * 通过指定的类型获取用户的键信息。
      *
      * @param type  键的类型

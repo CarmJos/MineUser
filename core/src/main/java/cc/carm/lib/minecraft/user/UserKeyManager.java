@@ -18,10 +18,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -147,8 +144,28 @@ public class UserKeyManager implements MineUserManager {
     }
 
     @Override
+    public @NotNull UserKey playerKey(@NotNull Object onlinePlayer) {
+        if (onlinePlayer instanceof Long id) {
+            return Objects.requireNonNull(key(UserKeyType.ID, id));
+        } else if (onlinePlayer instanceof UUID uuid) {
+            return Objects.requireNonNull(key(UserKeyType.UUID, uuid));
+        } else if (onlinePlayer instanceof String name) {
+            return Objects.requireNonNull(key(UserKeyType.NAME, name));
+        } else if (onlinePlayer instanceof UserKey key) {
+            return key;
+        }
+
+        UUID translated = platform.translatePlayer(onlinePlayer);
+        return Objects.requireNonNull(key(UserKeyType.UUID, translated));
+    }
+
+    @Override
     public @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param) {
-        if (param == null) return null;
+        if (param == null || !type.validate(param)) return null;
+        if (type == UserKeyType.UUID) { // if UUID, check loaded first
+            UserKey loaded = this.loaded.get((UUID) param);
+            if (loaded != null) return loaded;
+        }
         try {
             return cache.get(param, () -> {
                 UserKey fromLoaded = loaded.values().stream()

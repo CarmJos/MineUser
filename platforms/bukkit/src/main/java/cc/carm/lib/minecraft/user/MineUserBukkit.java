@@ -4,6 +4,7 @@ import cc.carm.lib.easyplugin.EasyPlugin;
 import cc.carm.lib.minecraft.user.conf.PluginConfig;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.UUID;
 
 public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, Listener {
 
@@ -67,6 +69,14 @@ public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, List
     @Override
     public boolean isRedisAvailable() {
         return Bukkit.getPluginManager().isPluginEnabled("MineRedis");
+    }
+
+    @Override
+    public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
+        if (!(playerObject instanceof OfflinePlayer player)) {
+            throw new IllegalArgumentException("Only a player can provide a UserKey.");
+        }
+        return player.getUniqueId();
     }
 
     @EventHandler(priority = EventPriority.HIGH)

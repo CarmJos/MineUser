@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -24,6 +25,8 @@ public interface MineUserPlatform {
                 .map(v -> ColorParser.parse(Arrays.asList(v)))
                 .ifPresent(list -> list.forEach(messageConsumer));
     }
+
+    @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException;
 
 
 }

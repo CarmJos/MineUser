@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <dependency.minesql.version>1.4.1</dependency.minesql.version>
+        <dependency.minesql.version>1.4.2</dependency.minesql.version>
         <dependency.mineredis.version>1.2.0</dependency.mineredis.version>
         <dependency.easyconfig.version>3.9.1</dependency.easyconfig.version>
         <deps.easyplugin.version>1.5.12</deps.easyplugin.version>

@@ -32,7 +32,7 @@ public record UserKey(
 
     public boolean match(UserKeyType type, Object param) {
         return switch (type) {
-            case ID -> param instanceof Long uid && id == uid;
+            case ID -> param instanceof Number uid && id == uid.longValue();
             case UUID -> param instanceof UUID userUUID && uuid.equals(userUUID);
             case NAME -> param instanceof String username && name.equals(username);
         };

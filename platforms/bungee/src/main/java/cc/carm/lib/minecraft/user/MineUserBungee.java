@@ -2,6 +2,7 @@ package cc.carm.lib.minecraft.user;
 
 import cc.carm.lib.minecraft.user.conf.PluginConfig;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -12,6 +13,7 @@ import org.bstats.bungeecord.Metrics;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class MineUserBungee extends Plugin implements MineUserPlatform, Listener {
@@ -71,6 +73,14 @@ public class MineUserBungee extends Plugin implements MineUserPlatform, Listener
     @Override
     public boolean isRedisAvailable() {
         return ProxyServer.getInstance().getPluginManager().getPlugin("MineRedis") != null;
+    }
+
+    @Override
+    public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
+        if (!(playerObject instanceof ProxiedPlayer player)) {
+            throw new IllegalArgumentException("Only a ProxiedPlayer can provide a UserKey.");
+        }
+        return player.getUniqueId();
     }
 
     @Override

@@ -27,4 +27,12 @@ interface MineUserManager {
     @Unmodifiable
     @NotNull Set<UserKey> cached();
 
+    /**
+     * 通过在线玩家获取缓存的用户键
+     *
+     * @param onlinePlayer 在线玩家
+     * @return {@link UserKey} 用户键
+     */
+    @NotNull UserKey playerKey(@NotNull Object onlinePlayer);
+
 }
