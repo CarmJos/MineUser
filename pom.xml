@@ -26,7 +26,7 @@
     </properties>
     <groupId>cc.carm.lib</groupId>
     <artifactId>mineuser-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>MineUser</name>
     <description>MineCraft服务器通用用户键值调取、查询接口。</description>

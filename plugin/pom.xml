@@ -6,7 +6,7 @@
     <parent>
         <groupId>cc.carm.lib</groupId>
         <artifactId>mineuser-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <properties>
         <maven.compiler.source>${project.jdk.version}</maven.compiler.source>
