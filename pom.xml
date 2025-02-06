@@ -201,7 +201,37 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -241,6 +271,20 @@
                     <name>GitHub Packages</name>
                     <url>https://maven.pkg.github.com/CarmJos/MineUser</url>
                 </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>local</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>localRepository</id>
+                    <url>file:${user.home}/local-deploy/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>localRepository</id>
+                    <url>file:${user.home}/local-deploy/</url>
+                </repository>
             </distributionManagement>
         </profile>
 
