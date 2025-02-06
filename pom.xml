@@ -110,11 +110,9 @@
         </repository>
 
         <repository>
-            <id>MineSQL</id>
-            <name>GitHub Branch Repository</name>
+            <id>minesql-branch-repo</id>
             <url>https://raw.githubusercontent.com/CarmJos/MineSQL/repo/</url>
         </repository>
-
 
         <repository>
             <id>carm-repo</id>
