@@ -11,6 +11,11 @@ public record UserKey(
         long id, @NotNull UUID uuid,
         @NotNull String name
 ) {
+
+    public static @NotNull UserKey of(long id, @NotNull UUID uuid, @NotNull String name) {
+        return new UserKey(id, uuid, name);
+    }
+
     public static final Pattern KEY_PATTERN = Pattern.compile(
             "^(?<id>\\d+)" +
                     ":(?<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})" +
