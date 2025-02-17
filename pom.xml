@@ -21,12 +21,12 @@
 
         <dependency.minesql.version>1.4.2</dependency.minesql.version>
         <dependency.mineredis.version>1.2.0</dependency.mineredis.version>
-        <dependency.easyconfig.version>3.9.1</dependency.easyconfig.version>
+        <dependency.easyconfig.version>4.0.1</dependency.easyconfig.version>
         <deps.easyplugin.version>1.5.12</deps.easyplugin.version>
     </properties>
-    <groupId>cc.carm.lib</groupId>
+    <groupId>cc.carm.service</groupId>
     <artifactId>mineuser-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 
     <name>MineUser</name>
     <description>MineCraft服务器通用用户键值调取、查询接口。</description>
