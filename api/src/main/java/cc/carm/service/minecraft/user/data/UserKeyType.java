@@ -23,8 +23,20 @@ public class UserKeyType<T> {
 
     private static final @NotNull UserKeyType<?>[] VALUES = new UserKeyType[]{ID, UUID, NAME};
 
+    /**
+     * Get all types of the {@link UserKey}.
+     *
+     * @return All types of the {@link UserKey}.
+     */
     public static @NotNull UserKeyType<?>[] values() {
         return VALUES;
+    }
+
+    public static @NotNull UserKeyType<?> valueOf(@NotNull String dataKey) {
+        for (UserKeyType<?> type : values()) {
+            if (type.dataKey().equals(dataKey)) return type;
+        }
+        throw new IllegalArgumentException("Unknown data key: " + dataKey);
     }
 
     protected final @NotNull String dataKey;
