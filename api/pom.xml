@@ -31,6 +31,9 @@
                     <encoding>UTF-8</encoding>
                     <charset>UTF-8</charset>
                     <docencoding>UTF-8</docencoding>
+                    <additionalOptions>
+                        <additionalOption>-Xdoclint:none</additionalOption>
+                    </additionalOptions>
 
                     <includeDependencySources>true</includeDependencySources>
                     <dependencySourceIncludes>cc.carm.lib:*</dependencySourceIncludes>

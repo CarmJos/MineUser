@@ -27,7 +27,8 @@ public class MineUserAPI {
     /**
      * 通过在线玩家获取缓存的用户键
      *
-     * @param player 在线玩家(玩家对象)
+     * @param player   在线玩家(玩家对象)
+     * @param <PLAYER> 玩家对象类型, 依赖于具体的实现
      * @return {@link UserKey} 用户键
      */
     public static <PLAYER> @NotNull UserKey playerKey(@NotNull PLAYER player) {

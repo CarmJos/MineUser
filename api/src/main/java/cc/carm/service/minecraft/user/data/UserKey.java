@@ -40,7 +40,9 @@ public record UserKey(
      * Get the value of the key by the given type.
      *
      * @param type The type of the key.
+     * @param <T>  The type of the data.
      * @return The value of the key.
+     * @see UserKeyType
      */
     public <T> T value(@NotNull UserKeyType<T> type) {
         return type.extract(this);
@@ -51,6 +53,7 @@ public record UserKey(
      *
      * @param type  The type of the key.
      * @param param The param to match.
+     * @param <T>   The type of the data.
      * @return Whether the key matches the param.
      */
     @Contract(pure = true, value = "_, null -> false")
