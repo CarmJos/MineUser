@@ -1,9 +1,13 @@
 package cc.carm.service.minecraft.user.tests;
 
 import cc.carm.service.minecraft.user.data.UserKey;
+import cc.carm.service.minecraft.user.data.UserKeyType;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,6 +36,8 @@ public class UserKeyTest {
 
         UserKey parsed = UserKey.fromJSON(value);
         System.out.println(parsed.id() + " -> " + parsed.uuid() + " : " + parsed.name());
+
+        System.out.println(parsed.match(UserKeyType.UUID, parsed.uuid()));
     }
 
 

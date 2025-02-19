@@ -2,24 +2,37 @@ package cc.carm.service.minecraft.user.data;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-public class UserKeyType<T> {
+public abstract class UserKeyType<T> {
 
-    public static final UserKeyType<Long> ID = new UserKeyType<>(
-            Long.class, "id", UserKey::id,
-            (id, data) -> data instanceof Number num && id.equals(num.longValue())
-    ) {
+    public static final UserKeyType<Long> ID = new UserKeyType<Long>("id") {
         @Override
-        public boolean validate(@NotNull Object data) {
-            return data instanceof Number;
+        public Long extract(@NotNull UserKey key) {
+            return key.id();
+        }
+
+        @Override
+        public boolean match(@NotNull UserKey key, @NotNull Object input) {
+            if (data instanceof Number num) {
+                return id == num.longValue();
+            } else return false;
         }
     };
-    public static final UserKeyType<UUID> UUID = new UserKeyType<>(UUID.class, "uuid", UserKey::uuid);
-    public static final UserKeyType<String> NAME = new UserKeyType<>(String.class, "name", UserKey::name);
+    public static final UserKeyType<UUID> UUID = new UserKeyType<>("uuid", UserKey::uuid, (uuid, data) -> {
+        if (data instanceof UUID other) {
+            return uuid.equals(other);
+        } else if (data instanceof String str) {
+            return uuid.toString().equals(str);
+        } else return false;
+    });
+    public static final UserKeyType<String> NAME = new UserKeyType<>("name", UserKey::name, (name, data) -> {
+        if (data instanceof String str) {
+            return name.equals(str);
+        } else return name.equals(data.toString());
+    });
 
     private static final @NotNull UserKeyType<?>[] VALUES = new UserKeyType[]{ID, UUID, NAME};
 
@@ -41,57 +54,25 @@ public class UserKeyType<T> {
 
     protected final @NotNull String dataKey;
 
-    protected final @NotNull Class<T> type;
-    protected final @NotNull Function<UserKey, T> getter;
-    protected final @NotNull BiPredicate<T, Object> matcher;
-
-
     /**
      * Value types in the {@link UserKey}.
      *
-     * @param type    The original type of the value.
-     * @param dataKey The key in the data map.
-     */
-    private UserKeyType(@NotNull Class<T> type, @NotNull String dataKey,
-                        @NotNull Function<UserKey, T> getter) {
-        this.dataKey = dataKey;
-        this.type = type;
-        this.getter = getter;
-        this.matcher = Objects::equals;
-    }
-
-
-    /**
-     * Value types in the {@link UserKey}.
-     *
-     * @param type    The original type of the value.
      * @param dataKey The key in the data map.
      * @param matcher The matcher to validate the value.
      */
-    private UserKeyType(@NotNull Class<T> type, @NotNull String dataKey,
+    private UserKeyType(@NotNull String dataKey,
                         @NotNull Function<UserKey, T> getter,
                         @NotNull BiPredicate<T, Object> matcher) {
         this.dataKey = dataKey;
-        this.type = type;
-        this.getter = getter;
-        this.matcher = matcher;
     }
 
     public String dataKey() {
         return dataKey;
     }
 
-    public T extract(@NotNull UserKey key) {
-        return getter.apply(key);
-    }
+    public abstract T extract(@NotNull UserKey key);
 
-    public boolean match(@NotNull UserKey key, @NotNull Object input) {
-        return validate(input) && matcher.test(extract(key), input);
-    }
-
-    public boolean validate(@NotNull Object data) {
-        return type.isInstance(data);
-    }
+    public abstract boolean match(@NotNull UserKey key, @NotNull Object input);
 
     @Override
     public boolean equals(Object object) {
