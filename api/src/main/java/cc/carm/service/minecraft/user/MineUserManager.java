@@ -19,7 +19,7 @@ public interface MineUserManager {
      * @return {@link UserKey}
      */
     @Contract("_, null -> null")
-    @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param);
+    @Nullable UserKey key(@NotNull UserKeyType<?> type, @Nullable Object param);
 
     /**
      * @return 已缓存的(一般是在线的玩家)用户的键集合

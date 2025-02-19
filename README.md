@@ -27,7 +27,7 @@ record UserKey(
 ```
 而通过 `MineUserAPI` 入口类，您可以快速操作以下方法：
 
-- `@Nullable UserKey key(UserKeyType type, Object param)`
+- `@Nullable UserKey key(UserKeyType<?> type, Object param)`
 - `@Nullable UserKey key(long id)`
 - `@Nullable UserKey key(@NotNull UUID uuid)` 
 - `@Nullable UserKey key(@NotNull String username)`

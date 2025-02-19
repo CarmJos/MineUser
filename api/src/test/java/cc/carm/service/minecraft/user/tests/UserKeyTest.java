@@ -30,7 +30,7 @@ public class UserKeyTest {
         String value = random().toJson();
         System.out.println(value);
 
-        UserKey parsed = UserKey.parseJson(value);
+        UserKey parsed = UserKey.fromJSON(value);
         System.out.println(parsed.id() + " -> " + parsed.uuid() + " : " + parsed.name());
     }
 
@@ -41,7 +41,7 @@ public class UserKeyTest {
         String value = random().toString();
         System.out.println(value);
 
-        UserKey parsed = UserKey.parse(value);
+        UserKey parsed = UserKey.fromString(value);
         System.out.println(parsed.id() + " -> " + parsed.uuid() + " : " + parsed.name());
     }
 
@@ -61,7 +61,7 @@ public class UserKeyTest {
         List<String> parsed = KEYS.stream().map(UserKey::toString).toList();
         long s2 = System.nanoTime();
         for (String s : parsed) {
-            UserKey.parse(s);
+            UserKey.fromString(s);
         }
         System.out.println("parse: " + (System.nanoTime() - s2) + "ns");
 
@@ -76,7 +76,7 @@ public class UserKeyTest {
         List<String> jsoned = KEYS.stream().map(UserKey::toJson).toList();
         long s3 = System.nanoTime();
         for (String s : jsoned) {
-            UserKey.parseJson(s);
+            UserKey.fromJSON(s);
         }
         System.out.println("parseJSON: " + (System.nanoTime() - s3) + "ns");
 

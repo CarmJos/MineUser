@@ -124,7 +124,7 @@ public class UserKeyManager implements MineUserManager {
         }
     }
 
-    public @Nullable UserKey getKeyFromDatabase(UserKeyType type, Object param) {
+    public @Nullable UserKey getKeyFromDatabase(UserKeyType<?> type, Object param) {
         return TABLE.createQuery()
                 .addCondition(type.dataKey().toLowerCase(), param)
                 .setLimit(1).build().execute(query -> {
@@ -160,7 +160,7 @@ public class UserKeyManager implements MineUserManager {
     }
 
     @Override
-    public @Nullable UserKey key(@NotNull UserKeyType type, @Nullable Object param) {
+    public @Nullable UserKey key(@NotNull UserKeyType<?> type, @Nullable Object param) {
         if (param == null || !type.validate(param)) return null;
         if (type == UserKeyType.UUID) { // if UUID, check loaded first
             UserKey loaded = this.loaded.get((UUID) param);

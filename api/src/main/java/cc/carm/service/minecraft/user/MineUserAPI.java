@@ -41,7 +41,7 @@ public class MineUserAPI {
      * @param param 对应键的查询参数
      * @return {@link UserKey}, 若用户从不存在则返回null
      */
-    public static @Nullable UserKey key(UserKeyType type, Object param) {
+    public static @Nullable UserKey key(UserKeyType<?> type, Object param) {
         return manager.key(type, param);
     }
 
