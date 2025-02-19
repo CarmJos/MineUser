@@ -19,12 +19,12 @@ public record UserKey(
     public static final Pattern KEY_PATTERN = Pattern.compile(
             "^(?<id>\\d+)" +
                     ":(?<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})" +
-                    ":(?<name>[a-zA-Z0-9_]+)$"
+                    ":(?<name>[\\w]+)$"
     );
     public static final Pattern KEY_JSON_PATTERN = Pattern.compile(
             "^\\{\"id\":(?<id>\\d+)," +
                     "\"uuid\":\"(?<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\"," +
-                    "\"name\":\"(?<name>[a-zA-Z0-9_]+)\"}$"
+                    "\"name\":\"(?<name>[\\w]+)\"}$"
     );
 
     public String value(UserKeyType type) {

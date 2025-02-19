@@ -75,36 +75,31 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.bstats</shadedPattern>
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.json</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.json</shadedPattern>
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.json</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>cc.carm.lib.easyplugin</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.easyplugin</shadedPattern>
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.easyplugin</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>cc.carm.lib.githubreleases4j</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.githubreleases4j</shadedPattern>
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.githubreleases4j</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>cc.carm.lib.yamlcommentupdater</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.yamlcommentupdater</shadedPattern>
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.yamlcommentupdater</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>cc.carm.lib.configuration</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.configuration</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.bspfsystems.yamlconfiguration</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.configuration.yaml
-                            </shadedPattern> <!-- Replace this -->
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.configuration</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.yaml.snakeyaml</pattern>
-                            <shadedPattern>cc.carm.lib.minecraft.user.lib.yaml</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>cc.carm.service.minecraft.user.lib.yaml</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

@@ -1,6 +1,7 @@
 package cc.carm.service.minecraft.user;
 
 import cc.carm.service.minecraft.user.conf.PluginConfig;
+import cc.carm.service.minecraft.user.utils.VersionReader;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
