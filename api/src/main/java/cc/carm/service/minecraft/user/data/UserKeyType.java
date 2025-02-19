@@ -3,36 +3,65 @@ package cc.carm.service.minecraft.user.data;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 
 public abstract class UserKeyType<T> {
 
-    public static final UserKeyType<Long> ID = new UserKeyType<Long>("id") {
+    public static final UserKeyType<Long> ID = new UserKeyType<>("id") {
         @Override
         public Long extract(@NotNull UserKey key) {
             return key.id();
         }
 
         @Override
-        public boolean match(@NotNull UserKey key, @NotNull Object input) {
-            if (data instanceof Number num) {
-                return id == num.longValue();
-            } else return false;
+        public boolean validate(@NotNull Object input) {
+            return input instanceof Number;
+        }
+
+        @Override
+        public boolean match(@NotNull Long data, @NotNull Object input) {
+            return input instanceof Number num && data == num.longValue();
         }
     };
-    public static final UserKeyType<UUID> UUID = new UserKeyType<>("uuid", UserKey::uuid, (uuid, data) -> {
-        if (data instanceof UUID other) {
-            return uuid.equals(other);
-        } else if (data instanceof String str) {
-            return uuid.toString().equals(str);
-        } else return false;
-    });
-    public static final UserKeyType<String> NAME = new UserKeyType<>("name", UserKey::name, (name, data) -> {
-        if (data instanceof String str) {
-            return name.equals(str);
-        } else return name.equals(data.toString());
-    });
+
+    public static final UserKeyType<UUID> UUID = new UserKeyType<>("uuid") {
+        @Override
+        public UUID extract(@NotNull UserKey key) {
+            return key.uuid();
+        }
+
+        @Override
+        public boolean validate(@NotNull Object input) {
+            return input instanceof UUID || input instanceof String;
+        }
+
+        @Override
+        public boolean match(@NotNull UUID data, @NotNull Object input) {
+            if (input instanceof UUID other) {
+                return data.equals(other);
+            } else if (input instanceof String str) {
+                return data.toString().equals(str);
+            } else return false;
+        }
+
+    };
+    public static final UserKeyType<String> NAME = new UserKeyType<>("name") {
+        @Override
+        public String extract(@NotNull UserKey key) {
+            return key.name();
+        }
+
+        @Override
+        public boolean validate(@NotNull Object input) {
+            return input instanceof String;
+        }
+
+        @Override
+        public boolean match(@NotNull String data, @NotNull Object input) {
+            if (input instanceof String str) {
+                return data.equals(str);
+            } else return data.equals(input.toString());
+        }
+    };
 
     private static final @NotNull UserKeyType<?>[] VALUES = new UserKeyType[]{ID, UUID, NAME};
 
@@ -58,11 +87,8 @@ public abstract class UserKeyType<T> {
      * Value types in the {@link UserKey}.
      *
      * @param dataKey The key in the data map.
-     * @param matcher The matcher to validate the value.
      */
-    private UserKeyType(@NotNull String dataKey,
-                        @NotNull Function<UserKey, T> getter,
-                        @NotNull BiPredicate<T, Object> matcher) {
+    private UserKeyType(@NotNull String dataKey) {
         this.dataKey = dataKey;
     }
 
@@ -72,7 +98,13 @@ public abstract class UserKeyType<T> {
 
     public abstract T extract(@NotNull UserKey key);
 
-    public abstract boolean match(@NotNull UserKey key, @NotNull Object input);
+    public abstract boolean validate(@NotNull Object input);
+
+    public abstract boolean match(@NotNull T data, @NotNull Object input);
+
+    public boolean match(@NotNull UserKey key, @NotNull Object input) {
+        return match(extract(key), input);
+    }
 
     @Override
     public boolean equals(Object object) {
