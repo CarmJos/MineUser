@@ -26,7 +26,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: "Package"
-        run: mvn -B package --file pom.xml -Dgpg.skip
+        run: mvn -B -Plocal package --file pom.xml -Dgpg.skip
 
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v4
