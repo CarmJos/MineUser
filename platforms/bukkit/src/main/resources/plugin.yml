@@ -1,4 +1,4 @@
-main: cc.carm.lib.minecraft.user.MineUserBukkit
+main: cc.carm.service.minecraft.user.MineUserBukkit
 version: ${project.version}
 
 prefix: MineUser
