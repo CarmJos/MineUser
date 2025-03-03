@@ -1,6 +1,7 @@
 package cc.carm.service.minecraft.user;
 
 import cc.carm.lib.configuration.source.ConfigurationHolder;
+import cc.carm.lib.configuration.source.option.StandardOptions;
 import cc.carm.lib.configuration.source.yaml.YAMLConfigFactory;
 import cc.carm.lib.configuration.source.yaml.YAMLSource;
 import cc.carm.lib.easyplugin.utils.ColorParser;
@@ -30,7 +31,9 @@ public class MineUserCore {
         this.platform = platform;
 
         getLogger().info("加载配置文件...");
-        this.config = YAMLConfigFactory.from(new File(platform.getPluginFolder(), "config.yml")).build();
+        this.config = YAMLConfigFactory.from(new File(platform.getPluginFolder(), "config.yml"))
+                .option(StandardOptions.PRELOAD, true)
+                .build();
         this.config.initialize(PluginConfig.class);
 
         this.manager = new UserKeyManager(platform);

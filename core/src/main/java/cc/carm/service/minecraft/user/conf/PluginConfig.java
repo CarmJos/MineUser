@@ -2,9 +2,11 @@ package cc.carm.service.minecraft.user.conf;
 
 
 import cc.carm.lib.configuration.Configuration;
+import cc.carm.lib.configuration.annotation.ConfigPath;
 import cc.carm.lib.configuration.annotation.HeaderComments;
 import cc.carm.lib.configuration.value.standard.ConfiguredValue;
 
+@ConfigPath(root = true)
 public interface PluginConfig extends Configuration {
 
     @HeaderComments("排错模式，一般留给开发者检查问题，平常使用无需开启。")
