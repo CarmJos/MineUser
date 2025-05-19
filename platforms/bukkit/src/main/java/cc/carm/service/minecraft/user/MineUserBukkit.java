@@ -73,10 +73,10 @@ public class MineUserBukkit extends EasyPlugin implements MineUserPlatform, List
 
     @Override
     public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
-        if (!(playerObject instanceof OfflinePlayer player)) {
+        if (!(playerObject instanceof OfflinePlayer)) {
             throw new IllegalArgumentException("Only a player can provide a UserKey.");
         }
-        return player.getUniqueId();
+        return ((OfflinePlayer) playerObject).getUniqueId();
     }
 
     @EventHandler(priority = EventPriority.HIGH)

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public abstract class UserKeyType<T> {
 
-    public static final UserKeyType<Long> ID = new UserKeyType<>("id") {
+    public static final UserKeyType<Long> ID = new UserKeyType<Long>("id") {
         @Override
         public Long extract(@NotNull UserKey key) {
             return key.id();
@@ -19,11 +19,11 @@ public abstract class UserKeyType<T> {
 
         @Override
         public boolean match(@NotNull Long data, @NotNull Object input) {
-            return input instanceof Number num && data == num.longValue();
+            return input instanceof Number && data == ((Number) input).longValue();
         }
     };
 
-    public static final UserKeyType<UUID> UUID = new UserKeyType<>("uuid") {
+    public static final UserKeyType<UUID> UUID = new UserKeyType<UUID>("uuid") {
         @Override
         public UUID extract(@NotNull UserKey key) {
             return key.uuid();
@@ -36,15 +36,15 @@ public abstract class UserKeyType<T> {
 
         @Override
         public boolean match(@NotNull UUID data, @NotNull Object input) {
-            if (input instanceof UUID other) {
-                return data.equals(other);
-            } else if (input instanceof String str) {
-                return data.toString().equals(str);
+            if (input instanceof UUID) {
+                return data.equals(input);
+            } else if (input instanceof String) {
+                return data.toString().equals(input);
             } else return false;
         }
 
     };
-    public static final UserKeyType<String> NAME = new UserKeyType<>("name") {
+    public static final UserKeyType<String> NAME = new UserKeyType<String>("name") {
         @Override
         public String extract(@NotNull UserKey key) {
             return key.name();
@@ -57,8 +57,8 @@ public abstract class UserKeyType<T> {
 
         @Override
         public boolean match(@NotNull String data, @NotNull Object input) {
-            if (input instanceof String str) {
-                return data.equals(str);
+            if (input instanceof String) {
+                return data.equals(input);
             } else return data.equals(input.toString());
         }
     };

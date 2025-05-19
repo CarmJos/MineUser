@@ -77,10 +77,10 @@ public class MineUserBungee extends Plugin implements MineUserPlatform, Listener
 
     @Override
     public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
-        if (!(playerObject instanceof ProxiedPlayer player)) {
+        if (!(playerObject instanceof ProxiedPlayer)) {
             throw new IllegalArgumentException("Only a ProxiedPlayer can provide a UserKey.");
         }
-        return player.getUniqueId();
+        return ((ProxiedPlayer) playerObject).getUniqueId();
     }
 
     @Override

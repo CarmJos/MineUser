@@ -140,19 +140,19 @@ public class UserKeyManager implements MineUserManager {
 
     @Override
     public @Unmodifiable @NotNull Set<UserKey> cached() {
-        return Set.copyOf(loaded.values());
+        return Collections.unmodifiableSet(new HashSet<>(loaded.values()));
     }
 
     @Override
     public @NotNull UserKey playerKey(@NotNull Object onlinePlayer) {
-        if (onlinePlayer instanceof Long id) {
-            return Objects.requireNonNull(key(UserKeyType.ID, id));
-        } else if (onlinePlayer instanceof UUID uuid) {
-            return Objects.requireNonNull(key(UserKeyType.UUID, uuid));
-        } else if (onlinePlayer instanceof String name) {
-            return Objects.requireNonNull(key(UserKeyType.NAME, name));
-        } else if (onlinePlayer instanceof UserKey key) {
-            return key;
+        if (onlinePlayer instanceof Long) {
+            return Objects.requireNonNull(key(UserKeyType.ID, (Long) onlinePlayer));
+        } else if (onlinePlayer instanceof UUID) {
+            return Objects.requireNonNull(key(UserKeyType.UUID, (UUID) onlinePlayer));
+        } else if (onlinePlayer instanceof String) {
+            return Objects.requireNonNull(key(UserKeyType.NAME, (String) onlinePlayer));
+        } else if (onlinePlayer instanceof UserKey) {
+            return (UserKey) onlinePlayer;
         }
 
         UUID translated = platform.translatePlayer(onlinePlayer);
@@ -160,7 +160,7 @@ public class UserKeyManager implements MineUserManager {
     }
 
     @Override
-    public @Nullable UserKey key(@NotNull UserKeyType<?> type, @Nullable Object param) {
+    public <T> @Nullable UserKey key(@NotNull UserKeyType<T> type, @Nullable T param) {
         if (param == null || !type.validate(param)) return null;
         if (type == UserKeyType.UUID) { // if UUID, check loaded first
             UserKey loaded = this.loaded.get((UUID) param);

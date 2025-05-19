@@ -86,10 +86,10 @@ public class MineUserVelocity implements MineUserPlatform {
 
     @Override
     public @NotNull UUID translatePlayer(@NotNull Object playerObject) throws IllegalArgumentException {
-        if (!(playerObject instanceof Player player)) {
+        if (!(playerObject instanceof Player)) {
             throw new IllegalArgumentException("Only a player can provide a UserKey.");
         }
-        return player.getUniqueId();
+        return ((Player) playerObject).getUniqueId();
     }
 
     public String getVersion() {

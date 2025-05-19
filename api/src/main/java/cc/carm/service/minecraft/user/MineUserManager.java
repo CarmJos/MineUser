@@ -5,7 +5,7 @@ import cc.carm.service.minecraft.user.data.UserKeyType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Set;
 
@@ -19,12 +19,12 @@ public interface MineUserManager {
      * @return {@link UserKey}
      */
     @Contract("_, null -> null")
-    @Nullable UserKey key(@NotNull UserKeyType<?> type, @Nullable Object param);
+    <T> @Nullable UserKey key(@NotNull UserKeyType<T> type, @Nullable T param);
 
     /**
      * @return 已缓存的(一般是在线的玩家)用户的键集合
      */
-    @Unmodifiable
+    @UnmodifiableView
     @NotNull Set<UserKey> cached();
 
     /**

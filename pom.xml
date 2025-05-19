@@ -13,7 +13,7 @@
         <module>plugin</module>
     </modules>
     <properties>
-        <project.jdk.version>17</project.jdk.version>
+        <project.jdk.version>8</project.jdk.version>
         <maven.compiler.source>${project.jdk.version}</maven.compiler.source>
         <maven.compiler.target>${project.jdk.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,7 +26,7 @@
     </properties>
     <groupId>cc.carm.service</groupId>
     <artifactId>mineuser-parent</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <name>MineUser</name>
     <description>MineCraft服务器通用用户键值调取、查询接口。</description>

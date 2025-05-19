@@ -11,15 +11,8 @@ import java.util.regex.Pattern;
 
 /**
  * A key to identify a user.
- *
- * @param id   The user's id, should be unique, usually the auto-increment primary key in database.
- * @param uuid The user's uuid, should be unique, usually the uuid of the user in Minecraft.
- * @param name The user's name, may not be unique, usually the name of the user in Minecraft.
  */
-public record UserKey(
-        long id, @NotNull UUID uuid,
-        @NotNull String name
-) {
+public final class UserKey {
 
     public static @NotNull UserKey of(long id, @NotNull UUID uuid, @NotNull String name) {
         return new UserKey(id, uuid, name);
@@ -35,6 +28,21 @@ public record UserKey(
                     "\"uuid\":\"(?<uuid>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\"," +
                     "\"name\":\"(?<name>.*)\"}$"
     );
+
+    private final long id;
+    private final @NotNull UUID uuid;
+    private final @NotNull String name;
+
+    /**
+     * @param id   The user's id, should be unique, usually the auto-increment primary key in database.
+     * @param uuid The user's uuid. Should be unique, usually the uuid of the user in Minecraft.
+     * @param name The user's name. May not be unique, usually the name of the user in Minecraft.
+     */
+    public UserKey(long id, @NotNull UUID uuid, @NotNull String name) {
+        this.id = id;
+        this.uuid = uuid;
+        this.name = name;
+    }
 
     /**
      * Get the value of the key by the given type.
@@ -59,7 +67,7 @@ public record UserKey(
     @Contract(pure = true, value = "_, null -> false")
     public <T> boolean match(@NotNull UserKeyType<T> type, @Nullable Object param) {
         if (param == null) return false;
-        if (param instanceof UserKey userKey) return userKey.equals(this);
+        if (param instanceof UserKey) return ((UserKey) param).equals(this);
         return type.match(this, param);
     }
 
@@ -124,6 +132,18 @@ public record UserKey(
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public long id() {
+        return id;
+    }
+
+    public @NotNull UUID uuid() {
+        return uuid;
+    }
+
+    public @NotNull String name() {
+        return name;
     }
 
 
