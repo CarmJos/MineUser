@@ -115,8 +115,8 @@
         </repository>
 
         <repository>
-            <id>carm-repo</id>
-            <url>https://repo.carm.cc/repository/maven-public/</url>
+            <id>mineredis-branch-repo</id>
+            <url>https://raw.githubusercontent.com/CarmJos/MineRedis/repo/</url>
         </repository>
 
     </repositories>
