@@ -22,7 +22,7 @@
         <dependency.minesql.version>1.4.2</dependency.minesql.version>
         <dependency.mineredis.version>1.2.0</dependency.mineredis.version>
         <dependency.easyconfig.version>4.0.11</dependency.easyconfig.version>
-        <deps.easyplugin.version>1.5.12</deps.easyplugin.version>
+        <deps.easyplugin.version>1.5.13</deps.easyplugin.version>
     </properties>
     <groupId>cc.carm.service</groupId>
     <artifactId>mineuser-parent</artifactId>
