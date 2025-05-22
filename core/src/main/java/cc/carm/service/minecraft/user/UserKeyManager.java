@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -182,7 +181,7 @@ public class UserKeyManager implements MineUserManager {
                 if (fromDB != null && useRedis()) RedisCache.cache(fromDB);
                 return fromDB;
             });
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             return null;
         }
     }
