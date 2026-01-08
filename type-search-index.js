@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"cc.carm.service.minecraft.user","l":"MineUserAPI"},{"p":"cc.carm.service.minecraft.user","l":"MineUserManager"},{"p":"cc.carm.service.minecraft.user.data","l":"UserKey"},{"p":"cc.carm.service.minecraft.user.data","l":"UserKeyType"}];updateSearchResults();
