@@ -26,10 +26,10 @@
     </properties>
     <groupId>cc.carm.service</groupId>
     <artifactId>mineuser-parent</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 
     <name>MineUser</name>
-    <description>MineCraft服务器通用用户键值调取、查询接口。</description>
+    <description>The universal user key value retrieval and query API for MineCraft servers.</description>
     <url>https://github.com/CarmJos/MineUser</url>
 
     <developers>

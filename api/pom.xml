@@ -5,7 +5,7 @@
     <parent>
         <groupId>cc.carm.service</groupId>
         <artifactId>mineuser-parent</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <properties>
@@ -14,6 +14,8 @@
     </properties>
 
     <artifactId>mineuser-api</artifactId>
+    <name>MineUser-API</name>
+    <url>https://github.com/CarmJos/MineUser</url>
 
     <build>
         <plugins>
@@ -50,5 +52,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>central</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <skipPublishing>false</skipPublishing>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

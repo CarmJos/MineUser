@@ -6,7 +6,7 @@
     <parent>
         <groupId>cc.carm.service</groupId>
         <artifactId>mineuser-parent</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <properties>
@@ -22,7 +22,6 @@
     <packaging>jar</packaging>
 
     <name>MineUser-Velocity</name>
-    <description>MineCraft服务器通用用户键值调取、查询接口。Velocity版本插件。</description>
     <url>https://github.com/CarmJos/MineUser</url>
 
     <repositories>
@@ -70,6 +69,26 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>central</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <skipPublishing>true</skipPublishing>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 
 </project>
