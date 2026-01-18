@@ -77,7 +77,7 @@ record UserKey(
 <project>
     <dependencies>
         <dependency>
-            <groupId>cc.carm.lib</groupId>
+            <groupId>cc.carm.service</groupId>
             <artifactId>mineuser-api</artifactId>
             <version>[LATEST RELEASE]</version>
             <scope>provided</scope>
@@ -111,7 +111,7 @@ repositories {
 
 ```groovy
 dependencies {
-    api "cc.carm.lib:mineuser-api:[LATEST RELEASE]"
+    api "cc.carm.service:mineuser-api:[LATEST RELEASE]"
 }
 ```
 
