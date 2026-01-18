@@ -80,7 +80,7 @@ record UserKey(
             <groupId>cc.carm.lib</groupId>
             <artifactId>mineuser-api</artifactId>
             <version>[LATEST RELEASE]</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
