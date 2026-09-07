@@ -9,3 +9,13 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:  # platform APIs are locked, do not update
+      - dependency-name: "org.spigotmc:spigot-api"
+      - dependency-name: "org.spigotmc:spigot"
+      - dependency-name: "org.bukkit:bukkit"
+      - dependency-name: "io.papermc.paper:paper-api"
+      - dependency-name: "com.destroystokyo.paper:paper-api"
+      - dependency-name: "org.purpurmc.purpur:purpur-api"
+      - dependency-name: "dev.folia:folia-api"
+      - dependency-name: "com.velocitypowered:velocity-api"
+      - dependency-name: "net.md-5:bungeecord-api"
