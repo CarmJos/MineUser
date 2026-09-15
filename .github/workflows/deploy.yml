@@ -17,7 +17,7 @@ jobs:
       - name: "Set up JDK"
         uses: actions/setup-java@v6
         with:
-          java-version: '17'
+          java-version: '17.0.20+101'
           distribution: 'adopt'
           cache: maven
           server-id: github
@@ -51,7 +51,7 @@ jobs:
       - name: "Set up JDK"
         uses: actions/setup-java@v6
         with:
-          java-version: '17'
+          java-version: '17.0.20+101'
           distribution: 'adopt'
           cache: maven
 
@@ -127,7 +127,7 @@ jobs:
       - name: "Set up JDK"
         uses: actions/setup-java@v6
         with:
-          java-version: '17'
+          java-version: '17.0.20+101'
           distribution: 'adopt'
           cache: maven
           server-id: central
